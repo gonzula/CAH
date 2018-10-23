@@ -190,7 +190,9 @@ class Player:
         self.notifications = []
 
     def filter_name(self, name):
-        return ''.join(e for e in name if e.isalnum() or e == ' ')
+        name = ''.join(e for e in name if e.isalnum() or e == ' ')
+        name = name[:10]
+        return name
 
     def __repr__(self):
         return f'<Player {self.name}>'
