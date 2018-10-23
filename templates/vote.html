@@ -1,0 +1,58 @@
+<html>
+    <meta charset="UTF-8">
+    <head>
+        <title>
+            Vote CAH
+        </title>
+        <script src="js/vote.js"></script>
+        <style>
+
+a {
+    color: #000;
+}
+
+body {
+    background-color: #000;
+}
+
+table tr {
+    background-color: #fff;
+}
+
+.selected td {
+    background-color: #ccc;
+}
+
+        </style>
+    </head>
+    <body>
+        <!-- <table id="options_table", border="1"> -->
+        <!-- {% for option in options %} -->
+        <!-- <tr id="option_row_{{ option }}"> -->
+        <!-- <td> -->
+        <!-- <a href="javascript:void(0);" -->
+        <!-- onclick="voteOption({{ option }});"> -->
+        <!-- Opção {{ option }} -->
+        <!-- </a> -->
+        <!-- </td> -->
+        <!-- </tr> -->
+        <!-- {% endfor %} -->
+        <!-- </table> -->
+
+        {% for option in options %}
+        <a href="javascript:void(0);"
+           onclick="voteOption({{ loop.index0 }});">
+            <table id="option_table_{{ loop.index0 }}", border="1">
+                {% for card in option %}
+                <tr>
+                    <td>
+                        {{ card }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </a>
+        <br>
+        {% endfor %}
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<html>
+    <meta charset="UTF-8">
+    <head>
+        <title>
+            Play CAH
+        </title>
+        <script src="js/play.js"></script>
+        <style>
+
+a {
+    color: #000;
+}
+
+body {
+    color: #fff;
+    background-color: #000;
+}
+
+table>tr {
+    background-color: #fff;
+}
+
+.selected {
+    background-color: #ccc;
+}
+
+        </style>
+    </head>
+    <body>
+        <h1>{{ black_card }}</h1>
+        <h2>Selecione {{ pick_text }}</h2>
+        <p hidden="1" id="pick">{{ pick }}</p>
+        <table id="cards_table", border="1">
+        </table>
+        <footer>
+            Jogador: {{ player_name }} <br>
+            Pontos: <span id="points"></span>
+        </footer>
+    </body>
+</html>
