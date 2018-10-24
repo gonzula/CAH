@@ -189,6 +189,7 @@ def player_select_card():
 @app.route('/server_notifications')
 def get_server_notifications():
     notifications = game.server_notifications
+    notifications = [n.serializable for n in notifications]
     game.server_notifications = []
 
     return json.dumps(notifications)
@@ -208,6 +209,7 @@ def get_player_notifications():
     player = sessions.get(token)
     try:
         notifications = player.notifications
+        notifications = [n.serializable for n in notifications]
         player.notifications = []
         return json.dumps(notifications)
     except Exception:

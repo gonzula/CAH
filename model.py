@@ -6,6 +6,7 @@ import numpy as np
 import time
 from collections import defaultdict, Counter
 import string
+from uuid import uuid4
 
 
 class Game:
@@ -31,6 +32,8 @@ class Game:
         self.options = []
         self.votes = {}
 
+        self.notifications = {}
+
         self.server_notifications = []
         self.last_winner = None
         self.winner_cards = None
@@ -38,29 +41,16 @@ class Game:
     def add_player(self, player):
         self.players.append(player)
 
-        self.server_notifications.append({'name': 'update_points'})
-        notification = {
-            'name': 'update_status',
-        }
-        self.server_notifications.append(notification)
+        self.server_notifications.append(Notification('update_points', self))
+        self.server_notifications.append(Notification('update_status', self))
 
     def remove_player(self, player):
         self.players.remove(player)
 
-        notification = {
-            'name': 'update_points',
-        }
-        self.server_notifications.append(notification)
-        notification = {
-            'name': 'update_status',
-        }
-        self.server_notifications.append(notification)
+        self.server_notifications.append(Notification('update_points', self))
+        self.server_notifications.append(Notification('update_status', self))
 
-        notification = {
-            'name': 'logout'
-        }
-
-        player.notifications.append(notification)
+        player.notifications.append(Notification('logout', self, player))
 
     def player_did_vote(self, player, option_id):
         if player not in self.players:
@@ -73,15 +63,12 @@ class Game:
         print('player' , player, 'voted', option_id, option)
         self.votes[player] = option
 
-        self.server_notifications.append({'name': 'update_points'})
+        self.server_notifications.append(Notification('update_points', self))
 
         if self.check_all_players_voted():
             self.go_to_play()
         else:
-            notification = {
-                'name': 'update_status',
-            }
-            self.server_notifications.append(notification)
+            self.server_notifications.append(Notification('update_status', self))
 
     def player_did_select_card(self, player, card_id):
         if player not in self.players:
@@ -93,8 +80,8 @@ class Game:
 
         self.player_selected_cards[player].append(card)
 
-        self.server_notifications.append({'name': 'update_status'})
-        self.server_notifications.append({'name': 'update_points'})
+        self.server_notifications.append(Notification('update_status', self))
+        self.server_notifications.append(Notification('update_points', self))
 
         if self.check_all_players_played():
             self.go_to_vote()
@@ -131,14 +118,8 @@ class Game:
             self.last_winner = winner
             self.winner_cards = self.player_selected_cards[winner]
 
-        notification = {
-            'name': 'get_winner',
-        }
-        self.server_notifications.append(notification)
-        notification = {
-            'name': 'update_points',
-        }
-        self.server_notifications.append(notification)
+        self.server_notifications.append(Notification('get_winner', self))
+        self.server_notifications.append(Notification('update_points', self))
 
     def go_to_play(self):
         self.check_winner()
@@ -149,11 +130,8 @@ class Game:
         self.current_black_card = Card.draw_cards(self.black, 1)[0]
         self.player_selected_cards = defaultdict(lambda: [])
 
-        notification = {
-            'name': 'go_to_play',
-        }
         for p in self.players:
-            p.notifications.append(notification)
+            p.notifications.append(Notification('go_to_play', self, p))
 
     def go_to_vote(self):
         self.state = Game.State.VOTE
@@ -172,11 +150,8 @@ class Game:
             p.cards.extend(Card.draw_cards(self.free_white_cards(),
                                            len(selected_cards)))
 
-        notification = {
-            'name': 'go_to_vote',
-        }
         for p in self.players:
-            p.notifications.append(notification)
+            p.notifications.append(Notification('go_to_vote', self, p))
 
     def free_white_cards(self):
         used_cards = set()
@@ -254,3 +229,23 @@ class Card:
             black = json.load(fin)
 
         return white, black
+
+class Notification:
+    def __init__(self, name, game, player=None, user_info=None):
+        self.name = name
+        self.user_info = user_info
+        self.token = str(uuid4())
+        self.active = True
+
+        self.game = game
+        self.player = player
+
+        game.notifications[self.token] = self
+
+    @property
+    def serializable(self):
+        return {
+            'name': self.name,
+            'user_info': self.user_info,
+            'token': self.token,
+        }
