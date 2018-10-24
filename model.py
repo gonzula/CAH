@@ -228,6 +228,7 @@ class Card:
         deck = sorted(deck, reverse=True)
 
         p = np.arange(len(deck)).astype('double')
+        p = np.power(p, 2)
         p /= p.sum()
 
         selected_cards = np.random.choice(deck, size=n, replace=False, p=p)
