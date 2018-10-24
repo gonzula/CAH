@@ -177,6 +177,13 @@ class Game:
         for p in self.players:
             p.notifications.append(notification)
 
+    def player_has_played(self, player):
+        if self.state == Game.State.PLAY:
+            n_cards = len(self.player_selected_cards.get(player, []))
+            return n_cards == self.current_black_card.pick
+        elif self.state == Game.State.VOTE:
+            return player in self.votes
+
 class Player:
     def __init__(self, name, token, game):
         self.name = self.filter_name(name)
