@@ -44,19 +44,6 @@ function selectCard(cardId) {
 
     var pick = parseInt(document.getElementById('pick').innerHTML, 10);
 
-    // if (pick === 1) {
-    // selectedCards = document.getElementsByClassName('selected');
-    // var i;
-    // for (i = 0; i < selectedCards.length; i++) {
-    // row = selectedCards[i];
-    // row.removeAttribute('class');
-    // }
-    // cardRow.setAttribute('class', 'selected');
-    // var xmlhttp = new XMLHttpRequest();
-    // var url = "/select_card?index=" + cardId;
-    // xmlhttp.open("POST", url, true);
-    // xmlhttp.send();
-    // } else
     if (cardsSelected < pick) {
         cardsSelected += 1;
         cardRow.setAttribute('class', 'selected');
