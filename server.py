@@ -4,11 +4,13 @@ import json
 from pprint import pprint
 from flask import Flask
 from flask import make_response, request, render_template, redirect
-from flask import send_from_directory
+from flask import send_from_directory, send_file
 from uuid import uuid4
 import sys
-
+import qrcode
+import socket
 from model import *
+import io
 
 app = Flask(__name__)
 
@@ -16,6 +18,27 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return redirect('/play')
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('172.26.0.1', 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
+
+@app.route('/qrcode')
+def get_qrcode():
+    url = f'http://{get_ip()}:5000'
+    img = qrcode.make(url)
+
+    output_file = io.BytesIO()
+    img.save(output_file, 'PNG')
+    image_binary = output_file.getvalue()
+    output_file.close()
+
+    response = make_response(image_binary)
+    response.headers.set('Content-Type', 'image/png')
+    return response
 
 @app.route("/server")
 def server_home():
