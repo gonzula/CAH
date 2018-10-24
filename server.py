@@ -118,7 +118,7 @@ def select_vote():
     option = int(request.args.get('option'))
     game.player_did_vote(player, option)
 
-    return "ok"
+    return json.dumps('ok')
 
 
 @app.route('/vote')
@@ -183,7 +183,7 @@ def player_select_card():
 
     game.player_did_select_card(player, cardIndex)
 
-    return "OK"
+    return json.dumps('ok')
 
 
 @app.route('/server_notifications')

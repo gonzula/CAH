@@ -45,10 +45,18 @@ function selectCard(cardId) {
     var pick = parseInt(document.getElementById('pick').innerHTML, 10);
 
     if (cardsSelected < pick) {
-        cardsSelected += 1;
-        cardRow.setAttribute('class', 'selected');
         var xmlhttp = new XMLHttpRequest();
         var url = "/select_card?index=" + cardId;
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var result = JSON.parse(this.responseText);
+
+                if (result == 'ok') {
+                    cardsSelected += 1;
+                    cardRow.setAttribute('class', 'selected');
+                }
+            }
+        }
         xmlhttp.open("POST", url, true);
         xmlhttp.send();
     }

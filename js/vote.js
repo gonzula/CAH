@@ -13,10 +13,20 @@ function voteOption(option) {
         row.removeAttribute('class');
     }
 
-    optionTable.setAttribute('class', 'selected');
 
     var xmlhttp = new XMLHttpRequest();
     var url = "/select_vote?option=" + option;
+
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+
+            if (result == 'ok') {
+                optionTable.setAttribute('class', 'selected');
+            }
+        }
+    }
 
     xmlhttp.open("POST", url, true);
     xmlhttp.send();
