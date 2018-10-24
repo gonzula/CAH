@@ -38,10 +38,7 @@ class Game:
     def add_player(self, player):
         self.players.append(player)
 
-        notification = {
-            'name': 'update_points',
-        }
-        self.server_notifications.append(notification)
+        self.server_notifications.append({'name': 'update_points'})
         notification = {
             'name': 'update_status',
         }
@@ -76,6 +73,7 @@ class Game:
         print('player' , player, 'voted', option_id, option)
         self.votes[player] = option
 
+        self.server_notifications.append({'name': 'update_points'})
 
         if self.check_all_players_voted():
             self.go_to_play()
@@ -95,10 +93,8 @@ class Game:
 
         self.player_selected_cards[player].append(card)
 
-        notification = {
-            'name': 'update_status',
-        }
-        self.server_notifications.append(notification)
+        self.server_notifications.append({'name': 'update_status'})
+        self.server_notifications.append({'name': 'update_points'})
 
         if self.check_all_players_played():
             self.go_to_vote()
