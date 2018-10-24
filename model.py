@@ -168,8 +168,11 @@ class Game:
         self.votes = {}
         for p in self.players:
             selected_cards = self.player_selected_cards[p]
-            for card in selected_cards:
-                p.cards.remove(card)
+            try:
+                for card in selected_cards:
+                    p.cards.remove(card)
+            except ValueError:
+                pass
             p.cards.extend(Card.draw_cards(self.white, len(selected_cards)))
 
         notification = {
