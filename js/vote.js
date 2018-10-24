@@ -2,6 +2,8 @@ window.onload = function () {
     setInterval(checkNotifications, 1000);
 };
 
+var receivedNotifications = [];
+
 function voteOption(option) {
     console.log('selected option ' + option);
     optionTable = document.getElementById('option_table_' + option);
@@ -53,9 +55,21 @@ function parseNotifications(notifications) {
     var i;
     for (i = 0; i < notifications.length; i++) {
         var note = notifications[i];
+
+        var token = note['token'];
+        if (arrayContainsElement(receivedNotifications, token)) {
+            continue;
+        }
+        receivedNotifications.push(token);
+
         var name = note['name'];
         if (name == 'go_to_play') {
             window.location.replace('/play');
         }
+
+        var xmlhttp = new XMLHttpRequest();
+        var url = "/received_notification?token=" + token;
+        xmlhttp.open("POST", url, true);
+        xmlhttp.send();
     }
 }

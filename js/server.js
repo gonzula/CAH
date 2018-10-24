@@ -4,6 +4,8 @@ window.onload = function () {
     getStatus();
 };
 
+var receivedNotifications = [];
+
 function checkNotifications() {
     var xmlhttp = new XMLHttpRequest();
     var url = "/server_notifications";
@@ -22,6 +24,12 @@ function parseNotifications(notifications) {
     var i;
     for (i = 0; i < notifications.length; i++) {
         var note = notifications[i];
+        var token = note['token'];
+        if (arrayContainsElement(receivedNotifications, token)) {
+            continue;
+        }
+        receivedNotifications.push(token);
+
         console.log(note);
         var name = note['name'];
         if (name == 'update_points') {
@@ -33,6 +41,11 @@ function parseNotifications(notifications) {
         if (name == 'get_winner') {
             getWinner();
         }
+
+        var xmlhttp = new XMLHttpRequest();
+        var url = "/received_notification?token=" + token;
+        xmlhttp.open("POST", url, true);
+        xmlhttp.send();
     }
 }
 

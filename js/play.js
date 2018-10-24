@@ -4,6 +4,8 @@ window.onload = function () {
     setInterval(checkNotifications, 1000);
 };
 
+var receivedNotifications = [];
+
 function checkNotifications() {
     var xmlhttp = new XMLHttpRequest();
     var url = "/player_notifications";
@@ -23,6 +25,12 @@ function parseNotifications(notifications) {
     for (i = 0; i < notifications.length; i++) {
         console.log(notifications);
         var note = notifications[i];
+        var token = note['token'];
+        if (arrayContainsElement(receivedNotifications, token)) {
+            continue;
+        }
+        receivedNotifications.push(token);
+
         var name = note['name'];
         if (name == 'go_to_vote') {
             window.location.replace('/vote');
@@ -34,6 +42,11 @@ function parseNotifications(notifications) {
             document.cookie = 'token' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             location.reload(true)
         }
+
+        var xmlhttp = new XMLHttpRequest();
+        var url = "/received_notification?token=" + token;
+        xmlhttp.open("POST", url, true);
+        xmlhttp.send();
     }
 }
 

@@ -186,14 +186,6 @@ def player_select_card():
     return json.dumps('ok')
 
 
-@app.route('/server_notifications')
-def get_server_notifications():
-    notifications = game.server_notifications
-    notifications = [n.serializable for n in notifications]
-    game.server_notifications = []
-
-    return json.dumps(notifications)
-
 @app.route('/remove_player', methods=['POST'])
 def remove_player():
     token = request.args.get('token')
@@ -203,14 +195,42 @@ def remove_player():
 
     return "ok"
 
+
+@app.route('/received_notification', methods=['POST'])
+def received_notification():
+    token = request.args.get('token')
+    note = game.notifications[token]
+    note.active = False
+    player = note.player
+
+    if player:
+        lst = player.notifications
+    else:
+        lst = game.server_notifications
+    try:
+        lst.remove(note)
+    except ValueError:
+        pass
+
+    return json.dumps('ok')
+
+
+
+@app.route('/server_notifications')
+def get_server_notifications():
+    notifications = game.server_notifications
+    notifications = [n.serializable for n in notifications if n.active]
+
+    return json.dumps(notifications)
+
+
 @app.route('/player_notifications')
 def get_player_notifications():
     token = request.cookies.get('token')
     player = sessions.get(token)
     try:
         notifications = player.notifications
-        notifications = [n.serializable for n in notifications]
-        player.notifications = []
+        notifications = [n.serializable for n in notifications if n.active]
         return json.dumps(notifications)
     except Exception:
         return json.dumps([])
