@@ -6,7 +6,7 @@
     </head>
     <body>
         <form action="/send_name", method="POST">
-            <input type="text" name="name" />
+            <input pattern=".{3,10}" required title="3 a 10 caracteres" type="text" name="name" />
             <input type="submit">
         </form>
     </body>
