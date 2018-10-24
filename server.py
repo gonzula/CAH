@@ -91,7 +91,7 @@ def get_status():
         h2 = pick
 
         total = len(game.players)
-        played = len(game.player_selected_cards)
+        played = len([1 for p in game.players if game.player_has_played(p)])
         remaining = total - played
         if remaining > 1:
             h3 = f'Faltam {remaining} jogadores de {total} escolherem'
