@@ -73,7 +73,7 @@ def get_status():
         if remaining > 1:
             h3 = f'Faltam {remaining} jogadores de {total} escolherem'
         else:
-            h3 = f'Falta {remaining} jogadore de {total} escolher'
+            h3 = f'Falta {remaining} jogador de {total} escolher'
     if game.state == Game.State.VOTE:
         h2 = 'Selecione a melhor'
 
@@ -83,7 +83,7 @@ def get_status():
         if remaining > 1:
             h3 = f'Faltam {remaining} jogadores de {total} votarem'
         else:
-            h3 = f'Falta {remaining} jogadores de {total} votar'
+            h3 = f'Falta {remaining} jogador de {total} votar'
 
 
     status = {
