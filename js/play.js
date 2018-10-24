@@ -23,7 +23,6 @@ function checkNotifications() {
 function parseNotifications(notifications) {
     var i;
     for (i = 0; i < notifications.length; i++) {
-        console.log(notifications);
         var note = notifications[i];
         var token = note['token'];
         if (arrayContainsElement(receivedNotifications, token)) {
@@ -42,6 +41,10 @@ function parseNotifications(notifications) {
             document.cookie = 'token' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             location.reload(true)
         }
+        if (name == 'update_info') {
+            getPoints();
+            getCards();
+        }
 
         var xmlhttp = new XMLHttpRequest();
         var url = "/received_notification?token=" + token;
@@ -50,29 +53,88 @@ function parseNotifications(notifications) {
     }
 }
 
-var cardsSelected = 0;
+var isSending = 0;
+var selectedCards = [];
 
 function selectCard(cardId) {
+    if (arrayContainsElement(selectedCards, cardId)) {
+        return;
+    }
+    if (isSending) {
+        return;
+    }
     cardRow = document.getElementById('card_row_' + cardId);
 
     var pick = parseInt(document.getElementById('pick').innerHTML, 10);
 
-    if (cardsSelected < pick) {
+    if (selectedCards.length < pick) {
         var xmlhttp = new XMLHttpRequest();
         var url = "/select_card?index=" + cardId;
         xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                isSending = 0;
+            }
             if (this.readyState == 4 && this.status == 200) {
                 var result = JSON.parse(this.responseText);
 
                 if (result == 'ok') {
-                    cardsSelected += 1;
+                    selectedCards.push(cardId);
                     cardRow.setAttribute('class', 'selected');
                 }
             }
         }
         xmlhttp.open("POST", url, true);
         xmlhttp.send();
+        isSending = 1;
     }
+}
+
+function clearSelection() {
+    if (isSending) {
+        return;
+    }
+
+    var xmlhttp = new XMLHttpRequest();
+    var url = "/clear_selection";
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            isSending = 0;
+        }
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+
+            if (result == 'ok') {
+                selectedCards = [];
+                selectedTables = document.getElementsByClassName('selected');
+                var i;
+                for (i = 0; selectedTables.length; ) {
+                    row = selectedTables[i];
+                    row.removeAttribute('class');
+                }
+            }
+        }
+    }
+    xmlhttp.open("POST", url, true);
+    xmlhttp.send();
+    isSending = 1;
+}
+
+
+function changeCards() {
+    if (isSending) {
+        return;
+    }
+
+    var xmlhttp = new XMLHttpRequest();
+    var url = "/change_cards";
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            isSending = 0;
+        }
+    }
+    xmlhttp.open("POST", url, true);
+    xmlhttp.send();
+    isSending = 1;
 }
 
 function getPoints() {

@@ -70,6 +70,18 @@ class Game:
         else:
             self.server_notifications.append(Notification('update_status', self))
 
+    def player_did_clear_selection(self, player):
+        if player not in self.players:
+            return
+
+        try:
+            del self.player_selected_cards[player]
+            self.server_notifications.append(Notification('update_status', self))
+            self.server_notifications.append(Notification('update_points', self))
+        except KeyError:
+            pass
+
+
     def player_did_select_card(self, player, card_id):
         if player not in self.players:
             return

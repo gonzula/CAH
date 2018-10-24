@@ -198,6 +198,15 @@ def get_player_cards():
 
     return json.dumps(cards)
 
+@app.route('/clear_selection', methods=['POST'])
+def clear_selection():
+    token = request.cookies.get('token')
+    player = sessions.get(token)
+    game.player_did_clear_selection(player)
+
+    return json.dumps('ok')
+
+
 @app.route('/select_card', methods=['POST'])
 def player_select_card():
     token = request.cookies.get('token')
