@@ -27,19 +27,6 @@ table tr {
         </style>
     </head>
     <body>
-        <!-- <table id="options_table", border="1"> -->
-        <!-- {% for option in options %} -->
-        <!-- <tr id="option_row_{{ option }}"> -->
-        <!-- <td> -->
-        <!-- <a href="javascript:void(0);" -->
-        <!-- onclick="voteOption({{ option }});"> -->
-        <!-- Opção {{ option }} -->
-        <!-- </a> -->
-        <!-- </td> -->
-        <!-- </tr> -->
-        <!-- {% endfor %} -->
-        <!-- </table> -->
-
         {% for option in options %}
         <a href="javascript:void(0);"
            onclick="voteOption({{ loop.index0 }});">
