@@ -23,9 +23,9 @@ def server_home():
 
 
 @app.route('/all_points')
-def getPoints():
+def get_points():
     players = sorted(game.players, key=lambda p: p.name.lower())
-    points = [{'name': p.name, 'points': p.points, 'token': p.token} for p in players]
+    points = [{'name': p.name, 'points': p.points, 'token': p.token, 'played': game.player_has_played(p)} for p in players]
 
     return json.dumps(points)
 

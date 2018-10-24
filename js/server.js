@@ -100,13 +100,17 @@ function getPoints() {
             console.log(points);
             var i;
             for (i = 0; i < points.length; i++) {
+                player = points[i];
                 var td = document.createElement('td');
                 var a = document.createElement('a');
+                if (player['played']) {
+                    td.setAttribute('class', 'played');
+                }
                 a.setAttribute('href', 'javascript:void(0);');
-                a.setAttribute('onclick', 'removePlayer("' + points[i]['token'] + '");');
+                a.setAttribute('onclick', 'removePlayer("' + player['token'] + '");');
                 var text = (
-                    'Jogador: <b>' + points[i]['name'] + '</b><br>' +
-                    'Pontos: <b>' + points[i]['points'] + '</b>');
+                    'Jogador: <b>' + player['name'] + '</b><br>' +
+                    'Pontos: <b>' + player['points'] + '</b>');
                 a.innerHTML = text;
                 td.appendChild(a);
                 tr.appendChild(td);
