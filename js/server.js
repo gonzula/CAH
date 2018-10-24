@@ -41,12 +41,30 @@ function parseNotifications(notifications) {
         if (name == 'get_winner') {
             getWinner();
         }
+        if (name == 'speak') {
+            var text = note['user_info']['text'];
+            speak(text);
+        }
 
         var xmlhttp = new XMLHttpRequest();
         var url = "/received_notification?token=" + token;
         xmlhttp.open("POST", url, true);
         xmlhttp.send();
     }
+}
+
+function speak(text) {
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    for(i = 0; i < voices.length ; i++) {
+        if(voices[i].name === 'Felipe') {
+            msg.voice = voices[i];
+        }
+    }
+    msg.text = text;
+    msg.lang = 'pt-BR';
+
+    speechSynthesis.speak(msg);
 }
 
 function getWinner() {
@@ -85,6 +103,11 @@ function parseStatus(status) {
     var h3 = document.getElementById('h3');
 
     if (status['h1']) {
+        if (status['h1'] !== h1.textContent) {
+            console.log(status['h1']);
+            console.log(h1.textContent);
+            speak(status['h1']);
+        }
         h1.textContent = status['h1'];
     }
     if (status['h2']) {

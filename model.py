@@ -7,6 +7,7 @@ import time
 from collections import defaultdict, Counter
 import string
 from uuid import uuid4
+import re
 
 
 class Game:
@@ -132,6 +133,31 @@ class Game:
 
         self.server_notifications.append(Notification('get_winner', self))
         self.server_notifications.append(Notification('update_points', self))
+        user_info = {
+            'text': self.text_to_speak(),
+        }
+        self.server_notifications.append(Notification('speak',
+                                                      self,
+                                                      None,
+                                                      user_info))
+
+    def text_to_speak(self):
+        if self.winner_cards is None:
+            return 'Foi empate'
+
+        text = self.current_black_card.text
+        replaced = 0
+        for card in self.winner_cards:
+            card = card.text
+            text, n = re.subn(r'_{3,}', card, text, 1)
+            replaced = max(n, replaced)
+
+        if not replaced:
+            text += '\n'
+            text += '. '.join(c.text for c in self.winner_cards)
+
+        return text
+
 
     def go_to_play(self):
         self.check_winner()
