@@ -169,13 +169,21 @@ class Game:
                     p.cards.remove(card)
             except ValueError:
                 pass
-            p.cards.extend(Card.draw_cards(self.white, len(selected_cards)))
+            p.cards.extend(Card.draw_cards(self.free_white_cards(),
+                                           len(selected_cards)))
 
         notification = {
             'name': 'go_to_vote',
         }
         for p in self.players:
             p.notifications.append(notification)
+
+    def free_white_cards(self):
+        used_cards = set()
+        for p in self.players:
+            used_cards.update(p.cards)
+
+        return [c for c in self.white if c not in used_cards]
 
     def player_has_played(self, player):
         if self.state == Game.State.PLAY:
@@ -191,7 +199,7 @@ class Player:
         self.points = 1
         self.game = game
 
-        self.cards = Card.draw_cards(game.white, 10)
+        self.cards = Card.draw_cards(game.free_white_cards(), 10)
 
         self.notifications = []
 
