@@ -154,7 +154,7 @@ def play():
                            pick_text=pick_text,
                            pick=game.current_black_card.pick,
                            player_name=player.name,
-                           black_card=game.current_black_card.text)
+                           )
 
 @app.route('/my_points')
 def get_player_points():
