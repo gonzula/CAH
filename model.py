@@ -165,6 +165,17 @@ class Game:
         for p in self.players:
             p.notifications.append(Notification('go_to_vote', self, p))
 
+    def change_cards(self, player):
+        if player.points >= 1:
+            player.cards = Card.draw_cards(self.free_white_cards(), 10)
+            player.points -= 1
+            player.notifications.append(Notification('update_info',
+                                                     self,
+                                                     player))
+            self.server_notifications.append(Notification('update_points',
+                                                          self))
+
+
     def free_white_cards(self):
         used_cards = set()
         for p in self.players:

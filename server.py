@@ -155,6 +155,15 @@ def vote():
     options = [[card.text for card in option] for option in options]
     return render_template('vote.html', options=options)
 
+@app.route('/change_cards', methods=['POST'])
+def change_cards():
+    token = request.cookies.get('token')
+    player = sessions.get(token)
+
+    game.change_cards(player)
+
+    return json.dumps('ok')
+
 @app.route('/play')
 def play():
     token = request.cookies.get('token')
