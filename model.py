@@ -225,7 +225,7 @@ class Card:
     def draw_cards(deck, n):
         deck = deck[:]
         np.random.shuffle(deck)
-        deck = sorted(deck, reverse=False)
+        deck = sorted(deck, reverse=True)
 
         p = np.arange(len(deck)).astype('double')
         p /= p.sum()
