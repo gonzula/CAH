@@ -130,12 +130,16 @@ function getPoints() {
                 table.removeChild(table.lastChild);
             }
 
-            var tr = document.createElement('tr');
 
             var points = JSON.parse(this.responseText);
             console.log(points);
             var i;
+            var tr;
             for (i = 0; i < points.length; i++) {
+                if (i % 6 == 0) {
+                    tr = document.createElement('tr');
+                    table.appendChild(tr);
+                }
                 player = points[i];
                 var td = document.createElement('td');
                 var a = document.createElement('a');
@@ -151,7 +155,6 @@ function getPoints() {
                 td.appendChild(a);
                 tr.appendChild(td);
             }
-            table.appendChild(tr);
         }
     };
     xmlhttp.open("GET", url, true);
