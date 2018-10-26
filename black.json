@@ -372,6 +372,10 @@
         "pick": 1
     },
     {
+        "text": "Em chuva de _______ no meu colo cai _______.",
+        "pick": 2
+    },
+    {
         "text": "Nada que melhor come\u00e7ar o dia com _______.",
         "pick": 1
     },
