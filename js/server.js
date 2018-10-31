@@ -59,6 +59,7 @@ function speak(text) {
     for(i = 0; i < voices.length ; i++) {
         if(voices[i].name === 'Felipe') {
             msg.voice = voices[i];
+            break;
         }
     }
     msg.text = text;
